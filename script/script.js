@@ -58,35 +58,39 @@ document.addEventListener("DOMContentLoaded", () => {
     toggleMenu();
 
     const popUpAnimationOpen = () => {
-        const popUpContent = document.querySelector(".popup-content");
-        popUpContent.style.top = '-25%';
-        let curPosition = -25;
-        let animationId;
-        const animate = () => {
+        if (document.documentElement.clientWidth > 768) {
+            const popUpContent = document.querySelector(".popup-content");
+            popUpContent.style.top = '-25%';
+            let curPosition = -25;
+            let animationId;
+            const animate = () => {
+                animationId = requestAnimationFrame(animate);
+                if (curPosition <= 10) {
+                    curPosition += 2;
+                    popUpContent.style.top = curPosition + '%';
+                } else {
+                    cancelAnimationFrame(animationId);
+                }
+            };
             animationId = requestAnimationFrame(animate);
-            if (curPosition <= 10) {
-                curPosition += 2;
-                popUpContent.style.top = curPosition + '%';
-            } else {
-                cancelAnimationFrame(animationId);
-            }
-        };
-        animationId = requestAnimationFrame(animate);
+        }
     };
     const popUpAnimationClose = () => {
-        const popUpContent = document.querySelector(".popup-content");
-        let curPosition = 10;
-        let animationId;
-        const animate = () => {
+        if (document.documentElement.clientWidth > 768) {
+            const popUpContent = document.querySelector(".popup-content");
+            let curPosition = 10;
+            let animationId;
+            const animate = () => {
+                animationId = requestAnimationFrame(animate);
+                if (curPosition > -25) {
+                    curPosition -= 4;
+                    popUpContent.style.top = curPosition + '%';
+                } else {
+                    cancelAnimationFrame(animationId);
+                }
+            };
             animationId = requestAnimationFrame(animate);
-            if (curPosition > -25) {
-                curPosition -= 4;
-                popUpContent.style.top = curPosition + '%';
-            } else {
-                cancelAnimationFrame(animationId);
-            }
-        };
-        animationId = requestAnimationFrame(animate);
+        }
     };
     //pop-up окно
     const togglePopUp = () => {
