@@ -112,15 +112,19 @@ document.addEventListener("DOMContentLoaded", () => {
     togglePopUp();
 
     const smoothScroll = finish => {
-        const scrollLength = finish + window.pageYOffset;
-        const pixelToScroll = scrollLength / 20;
+        const scrollLength = finish - document.documentElement.scrollTop;
+        console.log(scrollLength);
+        const pixelToScroll = scrollLength / 10;
         let animationId;
+        let sum = document.documentElement.scrollTop;
         const animate = () => {
             animationId = requestAnimationFrame(animate);
-            if (pixelToScroll - 100 > window.pageYOffset - scrollLength && window.innerHeight + window.pageYOffset < document.body.offsetHeight) {
-                window.scrollBy(0, pixelToScroll);
+            if (document.documentElement.scrollTop + 2 < finish && window.innerHeight + window.pageYOffset < document.body.offsetHeight) {
+                sum = parseFloat((sum + pixelToScroll).toFixed(10));
+                document.documentElement.scrollTop = parseFloat(sum.toFixed(10));
+                console.log(document.documentElement.scrollTop, sum);
             } else {
-                window.scrollTo(0, scrollLength);
+                // window.scrollTo(0, scrollLength);
                 cancelAnimationFrame(animationId);
             }
         };
@@ -133,7 +137,7 @@ document.addEventListener("DOMContentLoaded", () => {
             const targetToScroll = document.querySelector(item.getAttribute("href"));
             item.addEventListener('click', e => {
                 e.preventDefault();
-                smoothScroll(targetToScroll.getBoundingClientRect().top);
+                smoothScroll(targetToScroll.offsetTop);
             });
         });
     };
