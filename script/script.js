@@ -1,9 +1,12 @@
 document.addEventListener("DOMContentLoaded", () => {
+
+    //Таймер
     const countTimer = deadline => {
         const timerHours = document.querySelector("#timer-hours"),
             timerMinutes = document.querySelector("#timer-minutes"),
             timerSeconds = document.querySelector("#timer-seconds"),
             dateStop = new Date(deadline).getTime();
+        // eslint-disable-next-line prefer-const
         let timerId;
 
         const getTimeRemaining = () => {
@@ -20,8 +23,7 @@ document.addEventListener("DOMContentLoaded", () => {
                 timerHours.textContent = ("00" + timer.hours).slice(-2);
                 timerMinutes.textContent = ("00" + timer.minutes).slice(-2);
                 timerSeconds.textContent = ("00" + timer.seconds).slice(-2);
-            }
-            else {
+            } else {
                 timerHours.textContent = "00";
                 timerMinutes.textContent = "00";
                 timerSeconds.textContent = "00";
@@ -33,4 +35,104 @@ document.addEventListener("DOMContentLoaded", () => {
         timerId = setInterval(updateTime, 1000);
     };
     countTimer("18 august 2021, 12:40:00");
+
+    //Меню
+    const toggleMenu = () => {
+        const btnMenu = document.querySelector(".menu"),
+            menu = document.querySelector("menu"),
+            closeBtn = document.querySelector(".close-btn"),
+            menuItem = menu.querySelectorAll("ul>li");
+        const actionMenu = () => {
+            menu.classList.toggle('active-menu');
+        };
+
+
+        btnMenu.addEventListener('click', actionMenu);
+
+        closeBtn.addEventListener('click', actionMenu);
+
+        menuItem.forEach(item => {
+            item.addEventListener('click', actionMenu);
+        });
+    };
+    toggleMenu();
+
+    const popUpAnimationOpen = () => {
+        const popUpContent = document.querySelector(".popup-content");
+        popUpContent.style.top = '-25%';
+        let curPosition = -25;
+        let animationId;
+        const animate = () => {
+            animationId = requestAnimationFrame(animate);
+            if (curPosition <= 10) {
+                curPosition += 2;
+                popUpContent.style.top = curPosition + '%';
+            } else {
+                cancelAnimationFrame(animationId);
+            }
+        };
+        animationId = requestAnimationFrame(animate);
+    };
+    const popUpAnimationClose = () => {
+        const popUpContent = document.querySelector(".popup-content");
+        let curPosition = 10;
+        let animationId;
+        const animate = () => {
+            animationId = requestAnimationFrame(animate);
+            if (curPosition > -25) {
+                curPosition -= 4;
+                popUpContent.style.top = curPosition + '%';
+            } else {
+                cancelAnimationFrame(animationId);
+            }
+        };
+        animationId = requestAnimationFrame(animate);
+    };
+    //pop-up окно
+    const togglePopUp = () => {
+        const popup = document.querySelector('.popup'),
+            popupBtn = document.querySelectorAll('.popup-btn'),
+            popupClose = document.querySelector('.popup-close');
+
+        popupBtn.forEach(item => {
+            item.addEventListener('click', () => {
+                popUpAnimationOpen();
+                popup.style.display = 'block';
+            });
+        });
+        popupClose.addEventListener('click', () => {
+            popUpAnimationClose();
+            setTimeout(() => { popup.style.display = 'none'; }, 200);
+        });
+    };
+    togglePopUp();
+
+    const smoothScroll = finish => {
+        const scrollLength = finish + window.pageYOffset;
+        const pixelToScroll = scrollLength / 20;
+        let animationId;
+        const animate = () => {
+            animationId = requestAnimationFrame(animate);
+            if (pixelToScroll - 100 > window.pageYOffset - scrollLength && window.innerHeight + window.pageYOffset < document.body.offsetHeight) {
+                window.scrollBy(0, pixelToScroll);
+            } else {
+                window.scrollTo(0, scrollLength);
+                cancelAnimationFrame(animationId);
+            }
+        };
+        animationId = requestAnimationFrame(animate);
+    };
+    const setScrollAnimation = () => {
+        const menuLinks = [...document.querySelectorAll("menu>ul a")];
+        menuLinks.push(document.querySelector("main>a"));
+        menuLinks.forEach(item => {
+            const targetToScroll = document.querySelector(item.getAttribute("href"));
+            item.addEventListener('click', e => {
+                e.preventDefault();
+                smoothScroll(targetToScroll.getBoundingClientRect().top);
+            });
+        });
+    };
+    setScrollAnimation();
+
 });
