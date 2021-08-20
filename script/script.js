@@ -76,7 +76,7 @@ document.addEventListener("DOMContentLoaded", () => {
         }
     };
     const popUpAnimationClose = () => {
-        if (document.documentElement.clientWidth > 768) {
+        if (document.documentElement.clientWidth >= 768) {
             const popUpContent = document.querySelector(".popup-content");
             let curPosition = 10;
             let animationId;
@@ -99,12 +99,14 @@ document.addEventListener("DOMContentLoaded", () => {
             popupClose = document.querySelector('.popup-close');
 
         popupBtn.forEach(item => {
-            item.addEventListener('click', () => {
+            item.addEventListener('click', (e) => {
+                e.preventDefault();
                 popUpAnimationOpen();
                 popup.style.display = 'block';
             });
         });
-        popupClose.addEventListener('click', () => {
+        popupClose.addEventListener('click', (e) => {
+            e.preventDefault();
             popUpAnimationClose();
             setTimeout(() => { popup.style.display = 'none'; }, 200);
         });
@@ -113,7 +115,6 @@ document.addEventListener("DOMContentLoaded", () => {
 
     const smoothScroll = finish => {
         const scrollLength = finish - document.documentElement.scrollTop;
-        console.log(scrollLength);
         const pixelToScroll = scrollLength / 10;
         let animationId;
         let sum = document.documentElement.scrollTop;
@@ -122,9 +123,7 @@ document.addEventListener("DOMContentLoaded", () => {
             if (document.documentElement.scrollTop + 2 < finish && window.innerHeight + window.pageYOffset < document.body.offsetHeight) {
                 sum = parseFloat((sum + pixelToScroll).toFixed(10));
                 document.documentElement.scrollTop = parseFloat(sum.toFixed(10));
-                console.log(document.documentElement.scrollTop, sum);
             } else {
-                // window.scrollTo(0, scrollLength);
                 cancelAnimationFrame(animationId);
             }
         };
