@@ -38,10 +38,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
     //Меню
     const toggleMenu = () => {
-        const btnMenu = document.querySelector(".menu"),
-            menu = document.querySelector("menu"),
-            closeBtn = document.querySelector(".close-btn"),
-            menuItem = menu.querySelectorAll("ul>li");
+        const menu = document.querySelector("menu");
 
         const actionMenu = () => {
             if (document.documentElement.clientWidth >= 768) {
@@ -53,26 +50,22 @@ document.addEventListener("DOMContentLoaded", () => {
             }
         };
 
-
-        btnMenu.addEventListener('click', (e) => {
-            e.preventDefault();
-            actionMenu();
-        });
-
-        closeBtn.addEventListener('click', (e) => {
-            e.preventDefault();
-            actionMenu();
-        });
-
-        menuItem.forEach(item => {
-            item.addEventListener('click', (e) => {
+        document.body.addEventListener('click', e => {
+            if (e.target.closest(".menu") || e.target.closest('menu')) {
                 e.preventDefault();
-                actionMenu();
-            });
+                if (e.target.tagName === "A" || e.target.closest(".menu")) {
+                    actionMenu();
+                }
+            } else {
+                menu.style.transition = '1s';
+                menu.classList.remove('active-menu');
+            }
         });
     };
     toggleMenu();
 
+
+    //pop-up окно
     const popUpAnimationOpen = () => {
         if (document.documentElement.clientWidth > 768) {
             const popUpContent = document.querySelector(".popup-content");
@@ -108,11 +101,9 @@ document.addEventListener("DOMContentLoaded", () => {
             animationId = requestAnimationFrame(animate);
         }
     };
-    //pop-up окно
     const togglePopUp = () => {
         const popup = document.querySelector('.popup'),
-            popupBtn = document.querySelectorAll('.popup-btn'),
-            popupClose = document.querySelector('.popup-close');
+            popupBtn = document.querySelectorAll('.popup-btn');
 
         popupBtn.forEach(item => {
             item.addEventListener('click', e => {
@@ -121,14 +112,58 @@ document.addEventListener("DOMContentLoaded", () => {
                 popup.style.display = 'block';
             });
         });
-        popupClose.addEventListener('click', e => {
-            e.preventDefault();
-            popUpAnimationClose();
-            setTimeout(() => { popup.style.display = 'none'; }, 200);
+        popup.addEventListener('click', e => {
+            let target = e.target;
+
+            if (target.classList.contains('popup-close')) {
+                e.preventDefault();
+                popUpAnimationClose();
+                setTimeout(() => { popup.style.display = 'none'; }, 200);
+            } else {
+                target = target.closest('.popup-content');
+                if (!target) {
+                    popUpAnimationClose();
+                    setTimeout(() => { popup.style.display = 'none'; }, 200);
+                }
+            }
         });
     };
     togglePopUp();
 
+    //табы
+    const tabs = () => {
+        const tabHeader = document.querySelector('.service-header'),
+            tabs = tabHeader.querySelectorAll('.service-header-tab'),
+            tabsContent = document.querySelectorAll('.service-tab');
+
+        const toggleTabContent = index => {
+            for (let i = 0; i < tabsContent.length; i++) {
+                if (i === index) {
+                    tabsContent[i].classList.remove('d-none');
+                    tabs[i].classList.add('active');
+                } else {
+                    tabsContent[i].classList.add('d-none');
+                    tabs[i].classList.remove('active');
+                }
+            }
+        };
+
+        tabHeader.addEventListener('click', e => {
+            let target = e.target;
+            target = target.closest('.service-header-tab');
+            if (target) {
+                tabs.forEach((item, index) => {
+                    if (item === target) {
+                        toggleTabContent(index);
+                    }
+                });
+            }
+        });
+
+    };
+    tabs();
+
+    //плавный скролл
     const smoothScroll = finish => {
         const scrollLength = finish - document.documentElement.scrollTop;
         const pixelToScroll = scrollLength / 10;
@@ -136,7 +171,8 @@ document.addEventListener("DOMContentLoaded", () => {
         let sum = document.documentElement.scrollTop;
         const animate = () => {
             animationId = requestAnimationFrame(animate);
-            if (document.documentElement.scrollTop + 2 < finish && window.innerHeight + window.pageYOffset < document.body.offsetHeight) {
+            if (document.documentElement.scrollTop + 2 < finish &&
+                window.innerHeight + window.pageYOffset < document.body.offsetHeight) {
                 sum = parseFloat((sum + pixelToScroll).toFixed(10));
                 document.documentElement.scrollTop = parseFloat(sum.toFixed(10));
             } else {
