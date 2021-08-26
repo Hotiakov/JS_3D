@@ -351,14 +351,14 @@ document.addEventListener("DOMContentLoaded", () => {
                 }
                 item.value = item.value.replace(/\s+/g, ' ').replace(/-+/g, '-').replace(/^\s/g, '').replace(/^-+/g, '');
                 item.value = item.value.replace(/[^а-яё\- ]/gi, '');
-                const str = item.value.split(' ');
-                if (!item.classList.contains('.mess')) {
+                item.value = item.value.replace(/((?<=-| )[а-яё]+|[а-яё]+)/gi, mathes => mathes[0].toUpperCase() + mathes.slice(1));
+                // if (!item.classList.contains('.mess')) {
 
-                    str.forEach((elem, index) => {
-                        str[index] = str[index][0].toUpperCase() + str[index].slice(1).toLowerCase();
-                    });
-                }
-                item.value = str.join(' ');
+                //     str.forEach((elem, index) => {
+                //         str[index] = str[index][0].toUpperCase() + str[index].slice(1).toLowerCase();
+                //     });
+                // }
+                // item.value = str.join(' ');
             });
         });
 
@@ -379,7 +379,7 @@ document.addEventListener("DOMContentLoaded", () => {
                 if (!phoneReg.test(item.value)) {
                     alert('Поле с номером телефона введено некорректно!');
                 }
-                item.value = item.value.replace(/[^+\d]/g, '');
+                item.value = item.value.replace(/[^+\d()-]/g, '');
                 item.value = item.value.replace(/\++/g, '+');
             });
         });
