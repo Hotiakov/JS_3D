@@ -351,7 +351,7 @@ document.addEventListener("DOMContentLoaded", () => {
                 }
                 item.value = item.value.replace(/\s+/g, ' ').replace(/-+/g, '-').replace(/^\s/g, '').replace(/^-+/g, '');
                 item.value = item.value.replace(/[^а-яё\- ]/gi, '');
-                item.value = item.value.replace(/((?<=-| )[а-яё]+|[а-яё]+)/gi, mathes => mathes[0].toUpperCase() + mathes.slice(1));
+                item.value = item.value.replace(/((?<=-| )[а-яё]+|[а-яё]+)/gi, mathes => mathes[0].toUpperCase() + mathes.slice(1).toLowerCase());
 
             });
         });
