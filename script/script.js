@@ -328,10 +328,10 @@ document.addEventListener("DOMContentLoaded", () => {
 
     //Валидация
     const validation = () => {
-        const numReg = /^\d*$/,
-            strReg = /^[а-яё\- ]*$/i,
-            emailReg = /^([a-z]+[-_!~*'.]*[a-z]*)+@([a-z]+[-_!~*']*[a-z]*)+\.[a-z]{2,3}$/i,
-            phoneReg = /^(\+7|8)([-()]*\d){10}$/;
+        const numReg = /^\d*$/;
+        // strReg = /^[а-яё\- ]*$/i,
+        // emailReg = /^([a-z]+[-_!~*'.]*[a-z]*)+@([a-z]+[-_!~*']*[a-z]*)+\.[a-z]{2,3}$/i,
+        // phoneReg = /^(\+7|8)([-()]*\d){10}$/;
         const calcItems = document.querySelectorAll('input.calc-item');
         calcItems.forEach(item => {
             item.addEventListener('blur', () => {
@@ -346,10 +346,10 @@ document.addEventListener("DOMContentLoaded", () => {
         userStringInputs.push(document.querySelector(".mess"));
         userStringInputs.forEach(item => {
             item.addEventListener('blur', () => {
-                if (!strReg.test(item.value)) {
-                    alert('В полях "Ваше имя" и "Ваше сообщение" должны быть только кириллица, дефисы и пробелы!');
-                }
-                item.value = item.value.replace(/\s+/g, ' ').replace(/-+/g, '-').replace(/^\s/g, '').replace(/^-+/g, '');
+                // if (!strReg.test(item.value)) {
+                //     alert('В полях "Ваше имя" и "Ваше сообщение" должны быть только кириллица, дефисы и пробелы!');
+                // }
+                // item.value = item.value.replace(/\s+/g, ' ').replace(/-+/g, '-').replace(/^\s/g, '').replace(/^-+/g, '');
                 item.value = item.value.replace(/[^а-яё\- ]/gi, '');
                 item.value = item.value.replace(/((?<=-| )[а-яё]+|[а-яё]+)/gi, mathes => mathes[0].toUpperCase() + mathes.slice(1).toLowerCase());
 
@@ -359,33 +359,30 @@ document.addEventListener("DOMContentLoaded", () => {
         const emailInputs = document.querySelectorAll('[name="user_email"]');
         emailInputs.forEach(item => {
             item.addEventListener('blur', () => {
-                if (!emailReg.test(item.value)) {
-                    alert('Поле с email введено некорректно!');
-                }
+                // if (!emailReg.test(item.value)) {
+                //     alert('Поле с email введено некорректно!');
+                // }
                 item.value = item.value.replace(/-+/g, '-');
-                item.value = item.value.replace(/[^a-z\-_!~*'.@]/gi, '');
+                // item.value = item.value.replace(/[^a-z\-_!~*'.@]/gi, '');
             });
         });
 
         const phoneInputs = document.querySelectorAll('[name="user_phone"]');
         phoneInputs.forEach(item => {
             item.addEventListener('blur', () => {
-                if (!phoneReg.test(item.value)) {
-                    alert('Поле с номером телефона введено некорректно!');
-                }
-                item.value = item.value.replace(/[^+\d()-]/g, '');
+                // if (!phoneReg.test(item.value)) {
+                //     alert('Поле с номером телефона введено некорректно!');
+                // }
+                // item.value = item.value.replace(/[^+\d()-]/g, '');
                 item.value = item.value.replace(/\++/g, '+');
             });
         });
-
-
-
     };
     validation();
     //плавный скролл
     const smoothScroll = finish => {
         const scrollLength = finish - document.documentElement.scrollTop;
-        const pixelToScroll = scrollLength / 10;
+        const pixelToScroll = scrollLength / 20;
         let animationId;
         let sum = document.documentElement.scrollTop;
         const pageHeight = Math.max(
