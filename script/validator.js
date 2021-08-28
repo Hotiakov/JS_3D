@@ -33,7 +33,7 @@ class Validator {
             acceptRusOnly(elem, _pattern) {
                 if (!_pattern.test(elem.value)) {
                     elem.value = elem.value.replace(/[^а-яё\- ]/gi, '');
-                    return false;
+                    return true;
                 }
                 return true;
             }
