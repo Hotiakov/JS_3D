@@ -350,7 +350,7 @@ document.addEventListener("DOMContentLoaded", () => {
                 //     alert('В полях "Ваше имя" и "Ваше сообщение" должны быть только кириллица, дефисы и пробелы!');
                 // }
                 // item.value = item.value.replace(/\s+/g, ' ').replace(/-+/g, '-').replace(/^\s/g, '').replace(/^-+/g, '');
-                item.value = item.value.replace(/[^а-яё\- ]/gi, '');
+                // item.value = item.value.replace(/[^а-яё\- ]/gi, '');
                 item.value = item.value.replace(/((?<=-| )[а-яё]+|[а-яё]+)/gi, mathes => mathes[0].toUpperCase() + mathes.slice(1).toLowerCase());
 
             });
@@ -363,7 +363,7 @@ document.addEventListener("DOMContentLoaded", () => {
                 //     alert('Поле с email введено некорректно!');
                 // }
                 item.value = item.value.replace(/-+/g, '-');
-                // item.value = item.value.replace(/[^a-z\-_!~*'.@]/gi, '');
+                item.value = item.value.replace(/[^a-z\-_!~*'.@]/gi, '');
             });
         });
 
@@ -373,7 +373,7 @@ document.addEventListener("DOMContentLoaded", () => {
                 // if (!phoneReg.test(item.value)) {
                 //     alert('Поле с номером телефона введено некорректно!');
                 // }
-                // item.value = item.value.replace(/[^+\d()-]/g, '');
+                item.value = item.value.replace(/[^+\d()-]/g, '');
                 item.value = item.value.replace(/\++/g, '+');
             });
         });

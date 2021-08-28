@@ -10,7 +10,7 @@ class Validator {
     init() {
         this.applyStyle();
         this.setPattern();
-        this.elementsForm.forEach(elem => elem.addEventListener('change', this.checkIt.bind(this)));
+        this.elementsForm.forEach(elem => elem.addEventListener('input', this.checkIt.bind(this)));
         this.form.addEventListener('submit', e => {
             this.elementsForm.forEach(elem => this.checkIt({ target: elem }));
             if (this.error.size) {
@@ -29,6 +29,13 @@ class Validator {
             },
             pattern(elem, _pattern) {
                 return _pattern.test(elem.value);
+            },
+            acceptRusOnly(elem, _pattern) {
+                if (!_pattern.test(elem.value)) {
+                    elem.value = elem.value.replace(/[^а-яё\- ]/gi, '');
+                    return false;
+                }
+                return true;
             }
         };
 
@@ -122,7 +129,8 @@ const validator1 = new Validator({
         ],
         'form1-name': [
             ['notEmpty'],
-            ['pattern', 'user_name']
+            // ['pattern', 'user_name'],
+            ['acceptRusOnly', 'user_name']
         ]
     }
 });
@@ -146,11 +154,13 @@ const validator2 = new Validator({
         ],
         'form2-name': [
             ['notEmpty'],
-            ['pattern', 'user_name']
+            ['pattern', 'user_name'],
+            ['acceptRusOnly']
         ],
         'form2-message': [
             ['notEmpty'],
-            ['pattern', 'user_name']
+            // ['pattern', 'user_name'],
+            ['acceptRusOnly', 'user_name']
         ]
     }
 });
@@ -174,7 +184,8 @@ const validator3 = new Validator({
         ],
         'form3-name': [
             ['notEmpty'],
-            ['pattern', 'user_name']
+            // ['pattern', 'user_name'],
+            ['acceptRusOnly']
         ],
     }
 });
