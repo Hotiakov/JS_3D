@@ -154,8 +154,8 @@ const validator2 = new Validator({
         ],
         'form2-name': [
             ['notEmpty'],
-            ['pattern', 'user_name'],
-            ['acceptRusOnly']
+            // ['pattern', 'user_name'],
+            ['acceptRusOnly', 'user_name']
         ],
         'form2-message': [
             ['notEmpty'],
@@ -185,7 +185,7 @@ const validator3 = new Validator({
         'form3-name': [
             ['notEmpty'],
             // ['pattern', 'user_name'],
-            ['acceptRusOnly']
+            ['acceptRusOnly', 'user_name']
         ],
     }
 });

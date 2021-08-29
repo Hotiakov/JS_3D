@@ -349,9 +349,10 @@ document.addEventListener("DOMContentLoaded", () => {
                 // if (!strReg.test(item.value)) {
                 //     alert('В полях "Ваше имя" и "Ваше сообщение" должны быть только кириллица, дефисы и пробелы!');
                 // }
-                // item.value = item.value.replace(/\s+/g, ' ').replace(/-+/g, '-').replace(/^\s/g, '').replace(/^-+/g, '');
+                item.value = item.value.replace(/\s+/g, ' ').replace(/-+/g, '-').replace(/^\s/g, '').replace(/^-+/g, '').replace(/-$/g, '');
                 // item.value = item.value.replace(/[^а-яё\- ]/gi, '');
-                item.value = item.value.replace(/((?<=-| )[а-яё]+|[а-яё]+)/gi, mathes => mathes[0].toUpperCase() + mathes.slice(1).toLowerCase());
+                if (!item.classList.contains('mess'))
+                    item.value = item.value.replace(/((?<=-| )[а-яё]+|[а-яё]+)/gi, mathes => mathes[0].toUpperCase() + mathes.slice(1).toLowerCase());
 
             });
         });
