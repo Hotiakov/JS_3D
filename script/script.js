@@ -330,6 +330,7 @@ document.addEventListener("DOMContentLoaded", () => {
     const validation = () => {
         const numReg = /^\d*$/,
             strReg = /^[а-яё\- ]*$/i,
+            msgReg = /^[а-яё\-,.!?\d ]$/gi,
             emailReg = /^([a-z]+[-_!~*'.]*[a-z]*)+@([a-z]+[-_!~*']*[a-z]*)+\.[a-z]{2,3}$/i,
             phoneReg = /^(\+7|8)([-()]*\d){10}$/;
         const calcItems = document.querySelectorAll('input.calc-item');
@@ -343,19 +344,23 @@ document.addEventListener("DOMContentLoaded", () => {
         });
 
         const userStringInputs = [...document.querySelectorAll('[name="user_name"]')];
-        userStringInputs.push(document.querySelector(".mess"));
         userStringInputs.forEach(item => {
             item.addEventListener('blur', () => {
                 if (!strReg.test(item.value)) {
                     alert('В полях "Ваше имя" и "Ваше сообщение" должны быть только кириллица, дефисы и пробелы!');
                 }
                 item.value = item.value.replace(/\s+/g, ' ').replace(/-+/g, '-').replace(/^\s/g, '').replace(/^-+/g, '');
-                item.value = item.value.replace(/[^а-яё\- ]/gi, '');
-                item.value = item.value.replace(/((?<=-| )[а-яё]+|[а-яё]+)/gi, mathes => mathes[0].toUpperCase() + mathes.slice(1).toLowerCase());
-
+                item.value = item.value.replace(/[^а-яё\-,.!?\d ]/gi, '');
             });
         });
-
+        const msgInputs = document.querySelector(".mess");
+        msgInputs.addEventListener('blur', () => {
+            if (!msgReg.test(msgInputs.value)) {
+                alert('В полях "Ваше имя" и "Ваше сообщение" должны быть только кириллица, дефисы и пробелы!');
+            }
+            msgInputs.value = msgInputs.value.replace(/\s+/g, ' ').replace(/-+/g, '-').replace(/^\s/g, '').replace(/^-+/g, '');
+            msgInputs.value = msgInputs.value.replace(/[^а-яё\- ]/gi, '');
+        });
         const emailInputs = document.querySelectorAll('[name="user_email"]');
         emailInputs.forEach(item => {
             item.addEventListener('blur', () => {
@@ -382,6 +387,9 @@ document.addEventListener("DOMContentLoaded", () => {
 
     };
     validation();
+
+    //send-ajax-form
+
     //плавный скролл
     const smoothScroll = finish => {
         const scrollLength = finish - document.documentElement.scrollTop;
