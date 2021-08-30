@@ -345,50 +345,190 @@ document.addEventListener("DOMContentLoaded", () => {
 
         const userStringInputs = [...document.querySelectorAll('[name="user_name"]')];
         userStringInputs.forEach(item => {
+            const subBtn = item.closest('form').querySelector('button');
             item.addEventListener('blur', () => {
                 if (!strReg.test(item.value)) {
-                    alert('В полях "Ваше имя" и "Ваше сообщение" должны быть только кириллица, дефисы и пробелы!');
+                    alert('В поле "Ваше сообщение" должна быть только кириллица, знаки препинания и пробелы!');
+                    subBtn.disabled = true;
+                } else {
+                    subBtn.disabled = false;
                 }
                 item.value = item.value.replace(/\s+/g, ' ').replace(/-+/g, '-').replace(/^\s/g, '').replace(/^-+/g, '');
-                item.value = item.value.replace(/[^а-яё\-,.!?\d ]/gi, '');
+            });
+            item.addEventListener('input', () => {
+                item.value = item.value.replace(/[^а-яё\- ]/gi, '');
+
             });
         });
         const msgInputs = document.querySelector(".mess");
         msgInputs.addEventListener('blur', () => {
+            const subBtn = msgInputs.closest('form').querySelector('button');
             if (!msgReg.test(msgInputs.value)) {
-                alert('В полях "Ваше имя" и "Ваше сообщение" должны быть только кириллица, дефисы и пробелы!');
+                alert('В поле "Ваше имя" должна быть только кириллица, дефисы и пробелы!');
+                subBtn.disabled = true;
+            } else {
+                subBtn.disabled = false;
             }
             msgInputs.value = msgInputs.value.replace(/\s+/g, ' ').replace(/-+/g, '-').replace(/^\s/g, '').replace(/^-+/g, '');
-            msgInputs.value = msgInputs.value.replace(/[^а-яё\- ]/gi, '');
+        });
+        msgInputs.addEventListener('input', () => {
+            msgInputs.value = msgInputs.value.replace(/[^а-яё\-,.!? ]/gi, '');
         });
         const emailInputs = document.querySelectorAll('[name="user_email"]');
         emailInputs.forEach(item => {
+            const subBtn = item.closest('form').querySelector('button');
             item.addEventListener('blur', () => {
                 if (!emailReg.test(item.value)) {
                     alert('Поле с email введено некорректно!');
+                    subBtn.disabled = true;
+                } else {
+                    subBtn.disabled = false;
                 }
                 item.value = item.value.replace(/-+/g, '-');
+            });
+            item.addEventListener('input', () => {
                 item.value = item.value.replace(/[^a-z\-_!~*'.@]/gi, '');
             });
         });
 
         const phoneInputs = document.querySelectorAll('[name="user_phone"]');
         phoneInputs.forEach(item => {
+            const subBtn = item.closest('form').querySelector('button');
             item.addEventListener('blur', () => {
                 if (!phoneReg.test(item.value)) {
                     alert('Поле с номером телефона введено некорректно!');
+                    subBtn.disabled = true;
+                } else {
+                    subBtn.disabled = false;
                 }
-                item.value = item.value.replace(/[^+\d()-]/g, '');
                 item.value = item.value.replace(/\++/g, '+');
             });
+            item.addEventListener('input', () => {
+                item.value = item.value.replace(/[^+\d()-]/g, '');
+            });
         });
-
-
-
     };
     validation();
 
     //send-ajax-form
+    const createLoadAnim = () => {
+        const loadAnim = document.createElement('div');
+        loadAnim.className = 'sk-wave';
+        loadAnim.insertAdjacentHTML('afterbegin', `
+            <div class="sk-rect sk-rect-1"></div>
+            <div class="sk-rect sk-rect-2"></div>
+            <div class="sk-rect sk-rect-3"></div>
+            <div class="sk-rect sk-rect-4"></div>
+            <div class="sk-rect sk-rect-5"></div>
+        `);
+        document.head.insertAdjacentHTML("beforeend", `
+            <style>
+            .sk-wave {
+                width: 6em;
+                height: 4em;
+                margin: auto;
+                text-align: center;
+                font-size: 1em;
+                }
+                .sk-wave .sk-rect {
+                background-color: #337ab7;
+                height: 100%;
+                width: 0.5em;
+                display: inline-block;
+                -webkit-animation: sk-wave-stretch-delay 1.2s infinite ease-in-out;
+                        animation: sk-wave-stretch-delay 1.2s infinite ease-in-out;
+                }
+                .sk-wave .sk-rect-1 {
+                -webkit-animation-delay: -1.2s;
+                        animation-delay: -1.2s;
+                }
+                .sk-wave .sk-rect-2 {
+                -webkit-animation-delay: -1.1s;
+                        animation-delay: -1.1s;
+                }
+                .sk-wave .sk-rect-3 {
+                -webkit-animation-delay: -1s;
+                        animation-delay: -1s;
+                }
+                .sk-wave .sk-rect-4 {
+                -webkit-animation-delay: -0.9s;
+                        animation-delay: -0.9s;
+                }
+                .sk-wave .sk-rect-5 {
+                -webkit-animation-delay: -0.8s;
+                        animation-delay: -0.8s;
+                }
+                @-webkit-keyframes sk-wave-stretch-delay {
+                    0%, 40%, 100% {
+                        transform: scaleY(0.4);
+                    }
+                    20% {
+                        transform: scaleY(1);
+                    }
+                    }
+
+                    @keyframes sk-wave-stretch-delay {
+                    0%, 40%, 100% {
+                        transform: scaleY(0.4);
+                    }
+                    20% {
+                        transform: scaleY(1);
+                    }
+                    }
+            </style>
+        `);
+        return loadAnim;
+    };
+    const sendForm = () => {
+        const errorMessage = 'Что-то пошло не так...',
+            successMessage = 'Спасибо! Мы скоро с вами свяжемся!';
+
+        const forms = document.querySelectorAll("form");
+
+        const statusMessage = document.createElement('div');
+        const loadAnim = createLoadAnim();
+        statusMessage.style.cssText = 'font-size: 2rem; color: white;';
+
+        const postData = (body, outputData, errorData) => {
+            const request = new XMLHttpRequest();
+            request.addEventListener('readystatechange', () => {
+                if (request.readyState !== 4) {
+                    return;
+                }
+                if (request.status === 200) {
+                    outputData();
+                } else {
+                    errorData(request.status);
+                }
+            });
+            request.open('POST', './server.php');
+            request.setRequestHeader('Content-Type', 'application/json');
+
+            request.send(JSON.stringify(body));
+        };
+
+        forms.forEach(item => {
+            item.addEventListener('submit', e => {
+                e.preventDefault();
+                item.appendChild(statusMessage);
+                statusMessage.textContent = '';
+                statusMessage.insertAdjacentElement('afterbegin', loadAnim);
+                const formData = new FormData(item);
+                const body = {};
+                for (const val of formData.entries()) {
+                    body[val[0]] = val[1];
+                }
+                postData(body, () => {
+                    statusMessage.textContent = successMessage;
+
+                }, err => {
+                    statusMessage.textContent = errorMessage;
+                    console.error(err);
+                });
+            });
+        });
+    };
+    sendForm();
 
     //плавный скролл
     const smoothScroll = finish => {
