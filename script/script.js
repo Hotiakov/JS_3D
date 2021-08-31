@@ -328,6 +328,37 @@ document.addEventListener("DOMContentLoaded", () => {
 
     //Валидация
     const validation = () => {
+        const style = document.createElement('style');
+        style.textContent = `
+            .validator-error{
+                display: inline-block;
+                font-size: 12px;
+                font-family: sans-serif;
+                color: red;
+                position: absolute;
+                bottom: 0;
+                left: 50%;
+                transform: translateX(-50%);
+            }
+        `;
+        document.head.appendChild(style);
+        const showError = elem => {
+            elem.style.border = '3px solid red';
+            if (elem.nextElementSibling && elem.nextElementSibling.classList.contains('validator-error')) {
+                return;
+            }
+            const errorDiv = document.createElement('div');
+            errorDiv.textContent = 'Ошибка в этом поле';
+            errorDiv.classList.add('validator-error');
+            elem.insertAdjacentElement('afterend', errorDiv);
+        };
+        const showSuccess = elem => {
+            elem.style.border = '3px solid green';
+
+            if (elem.nextElementSibling && elem.nextElementSibling.classList.contains('validator-error')) {
+                elem.nextElementSibling.remove();
+            }
+        };
         const numReg = /^\d*$/,
             strReg = /^[а-яё\- ]*$/i,
             emailReg = /^([a-z]+[-_!~*'.]*[a-z]*)+@([a-z]+[-_!~*']*[a-z]*)+\.[a-z]{2,3}$/i,
@@ -347,12 +378,16 @@ document.addEventListener("DOMContentLoaded", () => {
             const subBtn = item.closest('form').querySelector('button');
             item.addEventListener('blur', () => {
                 if (!strReg.test(item.value)) {
-                    alert('В поле "Ваше сообщение" должна быть только кириллица, знаки препинания и пробелы!');
+                    showError(item);
                     subBtn.disabled = true;
                 } else {
+                    showSuccess(item);
                     subBtn.disabled = false;
                 }
-                item.value = item.value.replace(/\s+/g, ' ').replace(/-+/g, '-').replace(/^\s/g, '').replace(/^-+/g, '');
+                item.value = item.value.replace(/\s+/g, ' ')
+                    .replace(/-+/g, '-')
+                    .replace(/^\s/g, '')
+                    .replace(/^-+/g, '');
             });
             item.addEventListener('input', () => {
                 item.value = item.value.replace(/[^а-яё\- ]/gi, '');
@@ -361,7 +396,10 @@ document.addEventListener("DOMContentLoaded", () => {
         });
         const msgInputs = document.querySelector(".mess");
         msgInputs.addEventListener('blur', () => {
-            msgInputs.value = msgInputs.value.replace(/\s+/g, ' ').replace(/-+/g, '-').replace(/^\s/g, '').replace(/^-+/g, '');
+            msgInputs.value = msgInputs.value.replace(/\s+/g, ' ')
+                .replace(/-+/g, '-')
+                .replace(/^\s/g, '')
+                .replace(/^-+/g, '');
         });
         msgInputs.addEventListener('input', () => {
             msgInputs.value = msgInputs.value.replace(/[^а-яё\-,.!? ]/gi, '');
@@ -371,9 +409,10 @@ document.addEventListener("DOMContentLoaded", () => {
             const subBtn = item.closest('form').querySelector('button');
             item.addEventListener('blur', () => {
                 if (!emailReg.test(item.value)) {
-                    alert('Поле с email введено некорректно!');
+                    showError(item);
                     subBtn.disabled = true;
                 } else {
+                    showSuccess(item);
                     subBtn.disabled = false;
                 }
                 item.value = item.value.replace(/-+/g, '-');
@@ -388,9 +427,10 @@ document.addEventListener("DOMContentLoaded", () => {
             const subBtn = item.closest('form').querySelector('button');
             item.addEventListener('blur', () => {
                 if (!phoneReg.test(item.value)) {
-                    alert('Поле с номером телефона введено некорректно!');
+                    showError(item);
                     subBtn.disabled = true;
                 } else {
+                    showSuccess(item);
                     subBtn.disabled = false;
                 }
                 item.value = item.value.replace(/\++/g, '+');
@@ -481,7 +521,7 @@ document.addEventListener("DOMContentLoaded", () => {
         const loadAnim = createLoadAnim();
         statusMessage.style.cssText = 'font-size: 2rem; color: white;';
 
-        const postData = (body) => new Promise((resolve, reject) => {
+        const postData = body => new Promise((resolve, reject) => {
             const request = new XMLHttpRequest();
             request.addEventListener('readystatechange', () => {
                 if (request.readyState !== 4) {
