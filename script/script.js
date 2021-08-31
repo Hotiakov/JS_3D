@@ -362,13 +362,6 @@ document.addEventListener("DOMContentLoaded", () => {
         });
         const msgInputs = document.querySelector(".mess");
         msgInputs.addEventListener('blur', () => {
-            const subBtn = msgInputs.closest('form').querySelector('button');
-            if (!msgReg.test(msgInputs.value)) {
-                alert('В поле "Ваше имя" должна быть только кириллица, дефисы и пробелы!');
-                subBtn.disabled = true;
-            } else {
-                subBtn.disabled = false;
-            }
             msgInputs.value = msgInputs.value.replace(/\s+/g, ' ').replace(/-+/g, '-').replace(/^\s/g, '').replace(/^-+/g, '');
         });
         msgInputs.addEventListener('input', () => {
@@ -520,10 +513,12 @@ document.addEventListener("DOMContentLoaded", () => {
                 }
                 postData(body, () => {
                     statusMessage.textContent = successMessage;
-
+                    item.reset();
+                    setTimeout(() => { statusMessage.textContent = ''; }, 3500);
                 }, err => {
                     statusMessage.textContent = errorMessage;
                     console.error(err);
+                    setTimeout(() => { statusMessage.textContent = ''; }, 3500);
                 });
             });
         });
