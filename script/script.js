@@ -330,7 +330,6 @@ document.addEventListener("DOMContentLoaded", () => {
     const validation = () => {
         const numReg = /^\d*$/,
             strReg = /^[а-яё\- ]*$/i,
-            msgReg = /^[а-яё\-,.!?\d ]$/gi,
             emailReg = /^([a-z]+[-_!~*'.]*[a-z]*)+@([a-z]+[-_!~*']*[a-z]*)+\.[a-z]{2,3}$/i,
             phoneReg = /^(\+7|8)([-()]*\d){10}$/;
         const calcItems = document.querySelectorAll('input.calc-item');
@@ -482,23 +481,23 @@ document.addEventListener("DOMContentLoaded", () => {
         const loadAnim = createLoadAnim();
         statusMessage.style.cssText = 'font-size: 2rem; color: white;';
 
-        const postData = (body, outputData, errorData) => {
+        const postData = (body) => new Promise((resolve, reject) => {
             const request = new XMLHttpRequest();
             request.addEventListener('readystatechange', () => {
                 if (request.readyState !== 4) {
                     return;
                 }
                 if (request.status === 200) {
-                    outputData();
+                    resolve();
                 } else {
-                    errorData(request.status);
+                    reject(request.status);
                 }
             });
             request.open('POST', './server.php');
             request.setRequestHeader('Content-Type', 'application/json');
 
             request.send(JSON.stringify(body));
-        };
+        });
 
         forms.forEach(item => {
             item.addEventListener('submit', e => {
@@ -511,15 +510,17 @@ document.addEventListener("DOMContentLoaded", () => {
                 for (const val of formData.entries()) {
                     body[val[0]] = val[1];
                 }
-                postData(body, () => {
-                    statusMessage.textContent = successMessage;
-                    item.reset();
-                    setTimeout(() => { statusMessage.textContent = ''; }, 3500);
-                }, err => {
-                    statusMessage.textContent = errorMessage;
-                    console.error(err);
-                    setTimeout(() => { statusMessage.textContent = ''; }, 3500);
-                });
+                postData(body)
+                    .then(() => {
+                        statusMessage.textContent = successMessage;
+                        item.reset();
+                        setTimeout(() => { statusMessage.textContent = ''; }, 3500);
+                    })
+                    .catch(err => {
+                        statusMessage.textContent = errorMessage;
+                        console.error(err);
+                        setTimeout(() => { statusMessage.textContent = ''; }, 3500);
+                    });
             });
         });
     };
