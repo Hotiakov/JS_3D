@@ -528,7 +528,7 @@ document.addEventListener("DOMContentLoaded", () => {
         });
 
         forms.forEach(item => {
-            item.addEventListener('submit', e => {
+            item.addEventListener('submit', async e => {
                 e.preventDefault();
                 item.appendChild(statusMessage);
                 statusMessage.textContent = '';
@@ -538,7 +538,7 @@ document.addEventListener("DOMContentLoaded", () => {
                 for (const val of formData.entries()) {
                     body[val[0]] = val[1];
                 }
-                postData(body)
+                await postData(body)
                     .then(request => {
                         if (request.status !== 200) throw new Error('Ошибка при отправке данных на сервер');
                         statusMessage.textContent = successMessage;
@@ -550,6 +550,7 @@ document.addEventListener("DOMContentLoaded", () => {
                         console.error(err);
                         setTimeout(() => { statusMessage.textContent = ''; }, 3500);
                     });
+                console.log(1);
             });
         });
     };
