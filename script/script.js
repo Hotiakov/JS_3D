@@ -521,22 +521,10 @@ document.addEventListener("DOMContentLoaded", () => {
         const loadAnim = createLoadAnim();
         statusMessage.style.cssText = 'font-size: 2rem; color: white;';
 
-        const postData = body => new Promise((resolve, reject) => {
-            const request = new XMLHttpRequest();
-            request.addEventListener('readystatechange', () => {
-                if (request.readyState !== 4) {
-                    return;
-                }
-                if (request.status === 200) {
-                    resolve();
-                } else {
-                    reject(request.status);
-                }
-            });
-            request.open('POST', './server.php');
-            request.setRequestHeader('Content-Type', 'application/json');
-
-            request.send(JSON.stringify(body));
+        const postData = body => fetch('./server.php', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(body)
         });
 
         forms.forEach(item => {
@@ -551,7 +539,8 @@ document.addEventListener("DOMContentLoaded", () => {
                     body[val[0]] = val[1];
                 }
                 postData(body)
-                    .then(() => {
+                    .then(request => {
+                        if (request.status !== 200) throw new Error('Ошибка при отправке данных на сервер');
                         statusMessage.textContent = successMessage;
                         item.reset();
                         setTimeout(() => { statusMessage.textContent = ''; }, 3500);
