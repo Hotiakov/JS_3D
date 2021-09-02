@@ -59,6 +59,7 @@ const validation = () => {
                 .replace(/-+/g, '-')
                 .replace(/^\s/g, '')
                 .replace(/^-+/g, '');
+            item.value = item.value.replace(/((?<=-| )[а-яё]+|[а-яё]+)/gi, mathes => mathes[0].toUpperCase() + mathes.slice(1).toLowerCase());
         });
         item.addEventListener('input', () => {
             item.value = item.value.replace(/[^а-яё\- ]/gi, '');

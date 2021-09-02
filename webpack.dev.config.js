@@ -7,6 +7,15 @@ module.exports = {
         path: path.resolve(__dirname, './dist'),
     },
     mode: 'development',
+    devServer: {
+        static: {
+            directory: __dirname,
+            watch: true,
+        },
+        hot: true,
+        port: 8080,
+        open: true,
+    },
     module: {
         rules: [
             {
