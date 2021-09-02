@@ -101,6 +101,9 @@ const sendForm = () => {
                 } else {
                     statusMessage.textContent = successMessage;
                     item.reset();
+                    const inputs = item.querySelectorAll('input');
+                    console.log(inputs);
+                    inputs.forEach(item => { item.style.border = 'none'; });
                     setTimeout(() => { statusMessage.textContent = ''; }, 3500);
                 }
             })()

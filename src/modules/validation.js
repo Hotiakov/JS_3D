@@ -63,7 +63,6 @@ const validation = () => {
         });
         item.addEventListener('input', () => {
             item.value = item.value.replace(/[^а-яё\- ]/gi, '');
-
         });
     });
     const msgInputs = document.querySelector(".mess");
