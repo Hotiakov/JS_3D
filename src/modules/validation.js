@@ -13,13 +13,13 @@ const validation = () => {
             }
         `;
     document.head.appendChild(style);
-    const showError = elem => {
+    const showError = (elem, msg = 'Ошибка в этом поле') => {
         elem.style.border = '3px solid red';
         if (elem.nextElementSibling && elem.nextElementSibling.classList.contains('validator-error')) {
             return;
         }
         const errorDiv = document.createElement('div');
-        errorDiv.textContent = 'Ошибка в этом поле';
+        errorDiv.textContent = msg;
         errorDiv.classList.add('validator-error');
         elem.insertAdjacentElement('afterend', errorDiv);
     };
@@ -46,14 +46,11 @@ const validation = () => {
 
     const userStringInputs = [...document.querySelectorAll('[name="user_name"]')];
     userStringInputs.forEach(item => {
-        const subBtn = item.closest('form').querySelector('button');
         item.addEventListener('blur', () => {
-            if (!strReg.test(item.value)) {
+            if (!strReg.test(item.value) || item.value === '') {
                 showError(item);
-                subBtn.disabled = true;
             } else {
                 showSuccess(item);
-                subBtn.disabled = false;
             }
             item.value = item.value.replace(/\s+/g, ' ')
                 .replace(/-+/g, '-')
@@ -77,14 +74,11 @@ const validation = () => {
     });
     const emailInputs = document.querySelectorAll('[name="user_email"]');
     emailInputs.forEach(item => {
-        const subBtn = item.closest('form').querySelector('button');
         item.addEventListener('blur', () => {
             if (!emailReg.test(item.value)) {
                 showError(item);
-                subBtn.disabled = true;
             } else {
                 showSuccess(item);
-                subBtn.disabled = false;
             }
             item.value = item.value.replace(/-+/g, '-');
         });
@@ -95,19 +89,29 @@ const validation = () => {
 
     const phoneInputs = document.querySelectorAll('[name="user_phone"]');
     phoneInputs.forEach(item => {
-        const subBtn = item.closest('form').querySelector('button');
         item.addEventListener('blur', () => {
             if (!phoneReg.test(item.value)) {
                 showError(item);
-                subBtn.disabled = true;
             } else {
                 showSuccess(item);
-                subBtn.disabled = false;
             }
             item.value = item.value.replace(/\++/g, '+');
         });
         item.addEventListener('input', () => {
             item.value = item.value.replace(/[^+\d()-]/g, '');
+        });
+    });
+
+    const submitBtn = document.querySelectorAll('.form-btn');
+    submitBtn.forEach(item => {
+        item.addEventListener('click', e => {
+            const inputs = item.closest('form').querySelectorAll('input');
+            inputs.forEach(elem => {
+                if (!elem.classList.contains('mess') && elem.value === '') {
+                    showError(elem, 'Заполните это поле!');
+                    e.preventDefault();
+                }
+            });
         });
     });
 };
