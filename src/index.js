@@ -12,7 +12,7 @@ import setScrollAnimation from './modules/setScrollAnimation';
 document.addEventListener("DOMContentLoaded", () => {
 
     //Таймер
-    countTimer("18 august 2021, 12:40:00");
+    countTimer("05 september 2021, 19:40:00");
 
     //Меню
     toggleMenu();
