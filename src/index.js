@@ -9,10 +9,10 @@ import validation from './modules/validation';
 import sendForm from './modules/sendForm';
 import setScrollAnimation from './modules/setScrollAnimation';
 
-document.addEventListener("DOMContentLoaded", () => {
+//Таймер
+countTimer("05 september 2021, 19:40:00");
 
-    //Таймер
-    countTimer("05 september 2021, 19:40:00");
+document.addEventListener("DOMContentLoaded", () => {
 
     //Меню
     toggleMenu();
